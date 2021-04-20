@@ -9,8 +9,8 @@ logger = get_logger()
 
 
 def _redeem_courses(
-    settings: Settings,
-    scrapers: ScraperManager,
+        settings: Settings,
+        scrapers: ScraperManager,
 ) -> None:
     """
     Method to scrape courses from tutorialbar.com and enroll in them on udemy
@@ -52,11 +52,12 @@ def _redeem_courses(
 
 
 def redeem_courses(
-    settings: Settings,
-    tutorialbar_enabled: bool,
-    discudemy_enabled: bool,
-    coursevania_enabled: bool,
-    max_pages: Union[int, None],
+        settings: Settings,
+        tutorialbar_enabled: bool,
+        discudemy_enabled: bool,
+        # coursevania_enabled: bool,
+        comidoc_enabled: bool,
+        max_pages: Union[int, None],
 ) -> None:
     """
     Wrapper of _redeem_courses so we always close browser on completion
@@ -68,9 +69,10 @@ def redeem_courses(
     :param int max_pages: Max pages to scrape from sites (if pagination exists)
     :return:
     """
+    #  coursevania_enabled
     try:
         scrapers = ScraperManager(
-            tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+            tutorialbar_enabled, discudemy_enabled, comidoc_enabled, max_pages
         )
         _redeem_courses(settings, scrapers)
     except Exception as e:

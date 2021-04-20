@@ -2,14 +2,15 @@ import asyncio
 from functools import reduce
 from typing import List
 
-from udemy_enroller.scrapers.coursevania import CoursevaniaScraper
+# from udemy_enroller.scrapers.coursevania import CoursevaniaScraper
 from udemy_enroller.scrapers.discudemy import DiscUdemyScraper
 from udemy_enroller.scrapers.tutorialbar import TutorialBarScraper
+from udemy_enroller.scrapers.comidoc import ComidocScraper
 
-
+# coursevania_enabled
 class ScraperManager:
     def __init__(
-        self, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+        self, tutorialbar_enabled, discudemy_enabled, comidoc_enabled, max_pages
     ):
         self.tutorialbar_scraper = TutorialBarScraper(
             tutorialbar_enabled, max_pages=max_pages
@@ -17,13 +18,17 @@ class ScraperManager:
         self.discudemy_scraper = DiscUdemyScraper(
             discudemy_enabled, max_pages=max_pages
         )
-        self.coursevania_scraper = CoursevaniaScraper(
-            coursevania_enabled, max_pages=max_pages
+        # self.coursevania_scraper = CoursevaniaScraper(
+        #     coursevania_enabled, max_pages=max_pages
+        # )
+        self.comidoc_scraper = ComidocScraper(
+            comidoc_enabled, max_pages=max_pages
         )
         self._scrapers = (
             self.tutorialbar_scraper,
             self.discudemy_scraper,
-            self.coursevania_scraper,
+            # self.coursevania_scraper,
+            self.comidoc_scraper,
         )
 
     async def run(self) -> List:

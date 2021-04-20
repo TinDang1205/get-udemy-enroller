@@ -25,23 +25,26 @@ def enable_debug_logging() -> None:
 def determine_if_scraper_enabled(
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
-    coursevania_enabled: bool,
+    # coursevania_enabled: bool,
+    comidoc_enabled: bool,
 ) -> Tuple[bool, bool, bool]:
     """
     Determine what scrapers should be enabled and disabled
 
     :return: tuple containing boolean of what scrapers should run
     """
-    if not tutorialbar_enabled and not discudemy_enabled and not coursevania_enabled:
+    # and not coursevania_enabled
+    if not tutorialbar_enabled and not discudemy_enabled  and not comidoc_enabled:
         # Set all to True
-        tutorialbar_enabled, discudemy_enabled, coursevania_enabled = True, True, True
-    return tutorialbar_enabled, discudemy_enabled, coursevania_enabled
+        tutorialbar_enabled, discudemy_enabled, comidoc_enabled = True, True, True
+    return tutorialbar_enabled, discudemy_enabled, comidoc_enabled
 
 
 def run(
     tutorialbar_enabled: bool,
     discudemy_enabled: bool,
-    coursevania_enabled: bool,
+    # coursevania_enabled: bool,
+    comidoc_enabled: bool,
     max_pages: Union[int, None],
     delete_settings: bool,
 ):
@@ -57,7 +60,7 @@ def run(
     """
     settings = Settings(delete_settings)
     redeem_courses(
-        settings, tutorialbar_enabled, discudemy_enabled, coursevania_enabled, max_pages
+        settings, tutorialbar_enabled, discudemy_enabled, comidoc_enabled, max_pages
     )
 
 
@@ -81,16 +84,22 @@ def parse_args() -> Namespace:
         default=False,
         help="Run discudemy scraper",
     )
+    # parser.add_argument(
+    #     "--coursevania",
+    #     action="store_true",
+    #     default=False,
+    #     help="Run coursevania scraper",
+    # )
     parser.add_argument(
-        "--coursevania",
+        "--comidoc",
         action="store_true",
         default=False,
-        help="Run coursevania scraper",
+        help="Run comidoc scraper",
     )
     parser.add_argument(
         "--max-pages",
         type=int,
-        default=5,
+        default=848,
         help=f"Max pages to scrape from sites (if pagination exists) (Default is 5)",
     )
     parser.add_argument(
@@ -109,7 +118,7 @@ def parse_args() -> Namespace:
 
     return args
 
-
+# args.coursevania,
 def main():
     args = parse_args()
     if args:
@@ -118,14 +127,16 @@ def main():
         (
             tutorialbar_enabled,
             discudemy_enabled,
-            coursevania_enabled,
+            # coursevania_enabled,
+            comidoc_enabled,
         ) = determine_if_scraper_enabled(
-            args.tutorialbar, args.discudemy, args.coursevania
+            args.tutorialbar, args.discudemy,  args.comidoc
         )
         run(
             tutorialbar_enabled,
             discudemy_enabled,
-            coursevania_enabled,
+            # coursevania_enabled,
+            comidoc_enabled,
             args.max_pages,
             args.delete_settings,
         )

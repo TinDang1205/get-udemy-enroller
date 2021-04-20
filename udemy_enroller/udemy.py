@@ -40,7 +40,7 @@ class UdemyActions:
     HEADERS = {
         "origin": "https://www.udemy.com",
         "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 "
-        "Safari/537.36",
+                      "Safari/537.36",
         "accept": "application/json, text/plain, */*",
         "accept-encoding": "gzip, deflate, br",
         "content-type": "application/json;charset=UTF-8",
@@ -179,9 +179,9 @@ class UdemyActions:
             )
             coupon_valid = False
         if not bool(
-            coupon_details["price_text"]["data"]["pricing_result"]["list_price"][
-                "amount"
-            ]
+                coupon_details["price_text"]["data"]["pricing_result"]["list_price"][
+                    "amount"
+                ]
         ):
             logger.debug("Skipping course as it is always FREE")
             coupon_valid = False
@@ -213,9 +213,9 @@ class UdemyActions:
         is_preferred_category = True
 
         if (
-            course_details["primary_category"]["title"] not in self.settings.categories
-            and course_details["primary_subcategory"]["title"]
-            not in self.settings.categories
+                course_details["primary_category"]["title"] not in self.settings.categories
+                and course_details["primary_subcategory"]["title"]
+                not in self.settings.categories
         ):
             logger.debug("Skipping course as it does not have a wanted category")
             is_preferred_category = False
@@ -300,7 +300,7 @@ class UdemyActions:
         return int(soup.find("body")["data-clp-course-id"])
 
     def _checkout(
-        self, course_id: int, coupon_code: str, url: str, retry: bool = False
+            self, course_id: int, coupon_code: str, url: str, retry: bool = False
     ) -> str:
         """
         Checkout process for the course and coupon provided
@@ -345,25 +345,47 @@ class UdemyActions:
         :return: dict representing the checkout payload
         """
         return {
+            "checkout_environment": "Marketplace",
             "checkout_event": "Submit",
-            "shopping_cart": {
+            "shopping_info": {
                 "items": [
                     {
                         "discountInfo": {"code": coupon_code},
-                        "purchasePrice": {
-                            "amount": 0,
-                            "currency": self._currency,
-                            "price_string": "Free",
-                            "currency_symbol": self._currency_symbol,
+                        "buyable": {
+                            "type": "course",
+                            "id": course_id,
+                            "buyableId": course_id,
+                            "context": {}
                         },
-                        "buyableType": "course",
-                        "buyableId": course_id,
-                        "buyableContext": {},
+                        "price": {
+                            "amount": 0,
+                            "currency": "USD"
+                        }
                     }
                 ],
-                "is_cart": True,
+                "is_cart": "True"
             },
-            "payment_info": {"payment_vendor": "Free", "payment_method": "free-method"},
+            "payment_info": {
+                "payment_vendor": "Free",
+                "payment_method": "free-method"
+            },
+            "tax_info": {
+                "tax_rate": "0",
+                "billing_location": {
+                    "country_code": "VN",
+                    "secondary_location_info": "null"
+                },
+                "currency_code": "usd",
+                "transaction_items": [
+                    {
+                        "tax_excluded_amount": "0",
+                        "udemy_txn_item_reference": "course-" + str(course_id),
+                        "tax_included_amount": "0",
+                        "tax_amount": "0"
+                    }
+                ],
+                "tax_breakdown_type": "tax_inclusive"
+            }
         }
 
     def _cache_cookies(self, cookies: Dict) -> None:
